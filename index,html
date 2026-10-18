@@ -1,0 +1,740 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReparaIA | Asistente de reparación</title>
+
+  <style>
+    :root {
+      --primary: #6657d9;
+      --secondary: #8b7cf6;
+      --background: #f5f6fc;
+      --text: #25263a;
+      --muted: #686b80;
+      --white: #ffffff;
+      --border: #e4e5f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 17px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
+      font-size: 23px;
+      font-weight: bold;
+    }
+
+    .logo-icon {
+      background: #eeebff;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 25px;
+    }
+
+    .tag {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #6657d9, #9486fa);
+      color: white;
+      text-align: center;
+      padding: 65px 20px 75px;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 5vw, 46px);
+      margin-bottom: 14px;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: 0 auto 25px;
+      font-size: 17px;
+    }
+
+    .hero a {
+      display: inline-block;
+      background: white;
+      color: var(--primary);
+      text-decoration: none;
+      padding: 12px 23px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: -30px auto 50px;
+      padding: 0 20px;
+    }
+
+    .intro {
+      text-align: center;
+      margin: 35px 0 25px;
+    }
+
+    .intro h2 {
+      font-size: 27px;
+      margin-bottom: 8px;
+    }
+
+    .intro p {
+      color: var(--muted);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      padding: 25px;
+      box-shadow: 0 8px 28px rgba(40, 35, 90, 0.05);
+    }
+
+    .card h3 {
+      margin-bottom: 8px;
+      font-size: 21px;
+    }
+
+    .description {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin: 17px 0 7px;
+    }
+
+    input, select, textarea {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d8d9e7;
+      border-radius: 9px;
+      background: white;
+      font: inherit;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #d5ceff;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 115px;
+      resize: vertical;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    button {
+      border: none;
+      border-radius: 9px;
+      padding: 12px 17px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: bold;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.88;
+    }
+
+    .primary-button {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+      margin-top: 22px;
+    }
+
+    .secondary-button {
+      background: #eeebff;
+      color: var(--primary);
+    }
+
+    .result {
+      min-height: 310px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 45px 10px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .result-content h4 {
+      margin: 20px 0 7px;
+      color: var(--primary);
+      font-size: 16px;
+    }
+
+    .result-content ul,
+    .result-content ol {
+      padding-left: 22px;
+    }
+
+    .result-content li {
+      margin: 7px 0;
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 13px;
+      border-radius: 10px;
+      background: #fff5df;
+      color: #79520b;
+      font-size: 13px;
+    }
+
+    .success {
+      background: #edfaf2;
+      color: #236641;
+      padding: 12px;
+      border-radius: 9px;
+      font-size: 14px;
+      margin: 15px 0;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 45px;
+    }
+
+    .step {
+      background: white;
+      padding: 22px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+    }
+
+    .step span {
+      font-size: 27px;
+    }
+
+    .step h3 {
+      margin: 8px 0;
+      font-size: 17px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .feedback {
+      margin-top: 35px;
+      padding: 25px;
+      background: #eeebff;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .feedback p {
+      margin: 8px 0 18px;
+      color: #55516e;
+    }
+
+    .feedback a {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 11px 18px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px 15px;
+      color: var(--muted);
+      font-size: 13px;
+      background: white;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 700px) {
+      header {
+        padding: 14px 5%;
+      }
+
+      .tag {
+        display: none;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 50px 20px 60px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">
+      <span class="logo-icon">🔧</span>
+      <span>ReparaIA</span>
+    </div>
+    <div class="tag">Tecnología inteligente para todos</div>
+  </header>
+
+  <section class="hero">
+    <h1>¿Tu dispositivo tiene un problema?</h1>
+    <p>
+      Describe lo que sucede y explora posibles causas y soluciones
+      con ayuda de nuestro asistente digital.
+    </p>
+    <a href="#asistente">Probar el asistente</a>
+  </section>
+
+  <main>
+    <section class="intro" id="asistente">
+      <h2>Asistente de diagnóstico</h2>
+      <p>Cuéntanos qué le sucede a tu dispositivo.</p>
+    </section>
+
+    <section class="workspace">
+
+      <div class="card">
+        <h3>🔍 Describe tu problema</h3>
+        <p class="description">
+          Completa los campos para obtener recomendaciones iniciales.
+        </p>
+
+        <form id="repairForm">
+
+          <label for="device">Tipo de dispositivo</label>
+          <select id="device" required>
+            <option value="">Selecciona un dispositivo</option>
+            <option value="celular">Celular o smartphone</option>
+            <option value="computadora">Computadora o laptop</option>
+            <option value="tablet">Tablet</option>
+            <option value="consola">Consola de videojuegos</option>
+            <option value="otro">Otro dispositivo electrónico</option>
+          </select>
+
+          <label for="brand">Marca o modelo (opcional)</label>
+          <input
+            type="text"
+            id="brand"
+            maxlength="100"
+            placeholder="Ej. Samsung, HP, Lenovo..."
+          />
+
+          <label for="problem">¿Qué tipo de problema presenta?</label>
+          <select id="problem" required>
+            <option value="">Selecciona el problema</option>
+            <option value="noenciende">No enciende</option>
+            <option value="bateria">Problemas de batería o carga</option>
+            <option value="lento">Funciona muy lento</option>
+            <option value="internet">No se conecta a internet</option>
+            <option value="pantalla">Problemas con la pantalla</option>
+            <option value="sonido">Problemas de sonido</option>
+            <option value="calienta">Se calienta demasiado</option>
+            <option value="software">Errores de aplicaciones o sistema</option>
+            <option value="otro">Otro problema</option>
+          </select>
+
+          <label for="symptoms">Describe qué sucede</label>
+          <textarea
+            id="symptoms"
+            maxlength="1000"
+            placeholder="Ej. Mi laptop se apaga después de unos minutos..."
+            required
+          ></textarea>
+          <p class="hint">Máximo 1000 caracteres. No incluyas contraseñas ni datos personales.</p>
+
+          <button class="primary-button" type="submit">
+            Analizar problema
+          </button>
+
+          <button class="secondary-button" type="reset"
+            style="width:100%; margin-top:10px">
+            Limpiar formulario
+          </button>
+
+        </form>
+      </div>
+
+      <div class="card result" aria-live="polite">
+        <h3>🤖 Resultado del asistente</h3>
+        <p class="description">
+          Aquí aparecerán las recomendaciones.
+        </p>
+
+        <div id="result">
+          <div class="empty-state">
+            <div class="empty-icon">💡</div>
+            <p><strong>¡Comencemos!</strong></p>
+            <p>Completa el formulario y presiona “Analizar problema”.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="steps">
+      <div class="step">
+        <span>📝</span>
+        <h3>1. Describe</h3>
+        <p>Indica el dispositivo y explica el problema que estás experimentando.</p>
+      </div>
+
+      <div class="step">
+        <span>🧠</span>
+        <h3>2. Analiza</h3>
+        <p>El asistente utiliza reglas de diagnóstico inicial para orientar la búsqueda de posibles causas.</p>
+      </div>
+
+      <div class="step">
+        <span>🛠️</span>
+        <h3>3. Encuentra opciones</h3>
+        <p>Consulta pasos básicos y determina cuándo necesitas ayuda técnica profesional.</p>
+      </div>
+    </section>
+
+    <section class="feedback">
+      <h2>💜 Ayúdanos a mejorar ReparaIA</h2>
+      <p>
+        Tu opinión nos ayudará a evaluar la utilidad del prototipo
+        y descubrir qué podemos mejorar.
+      </p>
+
+      <!-- Reemplaza la dirección de ejemplo con el enlace
+           real de tu formulario de Microsoft Forms. -->
+      <a
+        id="formsLink"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Responder encuesta
+      </a>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2026 ReparaIA | Proyecto de innovación digital</p>
+    <p>Prototipo académico de asistencia tecnológica.</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById("repairForm");
+    const result = document.getElementById("result");
+
+    const diagnoses = {
+      noenciende: {
+        title: "El dispositivo no enciende",
+        causes: [
+          "La batería podría estar descargada.",
+          "El cargador, cable o toma de corriente podría presentar fallas.",
+          "Podría existir un problema de alimentación o un fallo interno."
+        ],
+        steps: [
+          "Comprueba que la toma de corriente funcione.",
+          "Revisa visualmente el cable y el cargador para detectar daños.",
+          "Si no hay señales de daño, prueba con un cargador compatible y en buen estado.",
+          "Si sigue sin encender, solicita una revisión técnica."
+        ]
+      },
+
+      bateria: {
+        title: "Problema de batería o carga",
+        causes: [
+          "El cable o cargador podría estar defectuoso.",
+          "El puerto de carga podría estar obstruido o dañado.",
+          "La batería podría estar desgastada."
+        ],
+        steps: [
+          "Prueba una toma de corriente diferente.",
+          "Revisa si el cable presenta cortes o daños.",
+          "Utiliza únicamente un cargador compatible.",
+          "Si la batería está hinchada o el equipo se calienta demasiado, deja de usarlo y solicita ayuda técnica."
+        ]
+      },
+
+      lento: {
+        title: "Rendimiento lento",
+        causes: [
+          "Hay demasiadas aplicaciones abiertas.",
+          "El almacenamiento podría estar casi lleno.",
+          "Una aplicación o actualización podría estar causando problemas.",
+          "El dispositivo podría tener recursos limitados o software no deseado."
+        ],
+        steps: [
+          "Reinicia el dispositivo.",
+          "Cierra las aplicaciones que no estés utilizando.",
+          "Comprueba el espacio disponible de almacenamiento.",
+          "Revisa las actualizaciones oficiales del sistema.",
+          "Si el problema continúa, realiza un diagnóstico más detallado antes de restablecer el equipo."
+        ]
+      },
+
+      internet: {
+        title: "Problemas de conexión a internet",
+        causes: [
+          "El router podría no tener conexión.",
+          "La configuración de red podría presentar errores.",
+          "Podría existir una interrupción del servicio."
+        ],
+        steps: [
+          "Comprueba si otros dispositivos pueden conectarse.",
+          "Verifica que el Wi-Fi esté activado.",
+          "Reinicia el router siguiendo las indicaciones del proveedor.",
+          "Si solo falla un dispositivo, revisa su configuración de red."
+        ]
+      },
+
+      pantalla: {
+        title: "Problemas con la pantalla",
+        causes: [
+          "Podría existir un fallo de software o de visualización.",
+          "El brillo o la configuración de pantalla podrían ser incorrectos.",
+          "Podría haber daños en el panel o en sus conexiones."
+        ],
+        steps: [
+          "Comprueba el nivel de brillo.",
+          "Reinicia el dispositivo si responde con normalidad.",
+          "Si se trata de una computadora, verifica que el monitor y sus cables estén conectados correctamente.",
+          "Si hay grietas, manchas internas o daños por líquidos, solicita una revisión técnica."
+        ]
+      },
+
+      sonido: {
+        title: "Problemas de sonido",
+        causes: [
+          "El volumen podría estar bajo o silenciado.",
+          "La salida de audio seleccionada podría ser incorrecta.",
+          "Una aplicación o controlador podría estar fallando."
+        ],
+        steps: [
+          "Comprueba el volumen y el modo silencioso.",
+          "Verifica qué dispositivo de salida de audio está seleccionado.",
+          "Prueba el sonido con otra aplicación.",
+          "Si el problema continúa, revisa las actualizaciones de software oficiales."
+        ]
+      },
+
+      calienta: {
+        title: "Sobrecalentamiento",
+        causes: [
+          "Las aplicaciones podrían estar utilizando demasiados recursos.",
+          "Las rejillas de ventilación podrían estar bloqueadas.",
+          "Podría existir un problema de batería, ventilación o componentes internos."
+        ],
+        steps: [
+          "Deja de utilizar el dispositivo y desconéctalo si es seguro hacerlo.",
+          "Colócalo en una superficie firme y ventilada.",
+          "No cubras las rejillas ni intentes enfriarlo con agua o refrigeración extrema.",
+          "Si presenta hinchazón, olor extraño, humo o calor extremo, no lo manipules ni lo cargues y busca asistencia especializada."
+        ]
+      },
+
+      software: {
+        title: "Error de software o aplicaciones",
+        causes: [
+          "La aplicación podría necesitar una actualización.",
+          "Podrían existir archivos temporales o errores de configuración.",
+          "El sistema operativo podría necesitar una actualización o revisión."
+        ],
+        steps: [
+          "Reinicia el dispositivo.",
+          "Comprueba si el error ocurre en una sola aplicación.",
+          "Actualiza el sistema y las aplicaciones desde fuentes oficiales.",
+          "Realiza una copia de seguridad antes de considerar cambios importantes."
+        ]
+      },
+
+      otro: {
+        title: "Necesitamos más información",
+        causes: [
+          "La descripción todavía no permite determinar una causa concreta.",
+          "El problema podría estar relacionado con el hardware, el software o la configuración."
+        ],
+        steps: [
+          "Anota cuándo comenzó el problema.",
+          "Observa si aparece algún mensaje de error.",
+          "Describe qué acciones provocan el fallo.",
+          "Evita abrir el dispositivo si no tienes experiencia técnica."
+        ]
+      }
+    };
+
+    const deviceNames = {
+      celular: "celular o smartphone",
+      computadora: "computadora o laptop",
+      tablet: "tablet",
+      consola: "consola de videojuegos",
+      otro: "otro dispositivo electrónico"
+    };
+
+    function escapeHTML(value) {
+      return value.replace(/[&<>"']/g, function (character) {
+        const entities = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        };
+        return entities[character];
+      });
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const device = document.getElementById("device").value;
+      const brand = document.getElementById("brand").value.trim();
+      const problem = document.getElementById("problem").value;
+      const symptoms = document.getElementById("symptoms").value.trim();
+
+      if (!device || !problem || !symptoms) {
+        result.innerHTML =
+          '<p class="notice">Completa todos los campos obligatorios.</p>';
+        return;
+      }
+
+      const diagnosis = diagnoses[problem];
+
+      const causesHTML = diagnosis.causes
+        .map(cause => `<li>${escapeHTML(cause)}</li>`)
+        .join("");
+
+      const stepsHTML = diagnosis.steps
+        .map(step => `<li>${escapeHTML(step)}</li>`)
+        .join("");
+
+      const safeBrand = brand
+        ? escapeHTML(brand)
+        : "No especificada";
+
+      const safeSymptoms = escapeHTML(symptoms);
+
+      result.innerHTML = `
+        <div class="success">
+          ✓ Análisis inicial generado correctamente.
+        </div>
+
+        <div class="result-content">
+          <p><strong>Dispositivo:</strong>
+            ${escapeHTML(deviceNames[device])}</p>
+
+          <p><strong>Marca o modelo:</strong>
+            ${safeBrand}</p>
+
+          <p><strong>Problema descrito:</strong>
+            ${safeSymptoms}</p>
+
+          <h4>🔎 Posibles causas</h4>
+          <ul>${causesHTML}</ul>
+
+          <h4>🛠️ Pasos recomendados</h4>
+          <ol>${stepsHTML}</ol>
+
+          <div class="notice">
+            <strong>Importante:</strong>
+            Este resultado es orientativo, no un diagnóstico técnico
+            confirmado. Si existe riesgo eléctrico, daño por líquidos,
+            batería hinchada o sobrecalentamiento extremo, no continúes
+            las pruebas. Busca asistencia profesional.
+          </div>
+        </div>
+      `;
+    });
+
+    form.addEventListener("reset", function () {
+      result.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">💡</div>
+          <p><strong>¡Comencemos!</strong></p>
+          <p>Completa el formulario y presiona “Analizar problema”.</p>
+        </div>
+      `;
+    });
+
+    // Pega aquí la URL real de tu encuesta de Microsoft Forms.
+    const FORMS_URL = "https://forms.cloud.microsoft/Pages/DesignPageV2.aspx?origin=NeoPortalPage&subpage=design&id=5BLt986DKUeK1ccfThs0MmyKy6BK9BVDo9P1us--CJ1UOEZaNU5RT0cxNk1JSkdZTUFXRFlQT0pEUy4u";
+
+    const formsLink = document.getElementById("formsLink");
+
+    if (FORMS_URL.trim() !== "") {
+      formsLink.href = FORMS_URL;
+    } else {
+      formsLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        alert(
+          "Agrega el enlace de tu encuesta de Microsoft Forms " +
+          "en la variable FORMS_URL del código."
+        );
+      });
+    }
+  </script>
+
+</body>
+</html>
